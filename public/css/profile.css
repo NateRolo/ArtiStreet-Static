@@ -1,0 +1,392 @@
+/* General body styling */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    padding-bottom: 50px;
+}
+
+/* Navbar */
+#navbar {
+    width: 100%;
+    background: linear-gradient(90deg, rgba(0, 212, 255, 1) 0%, rgba(202, 152, 251, 1) 65%, rgba(202, 152, 251, 1) 100%);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    padding: 10px 0;
+}
+
+.container-fluid {
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-brand {
+    position: relative;
+}
+
+#navbar-logo {
+    width: 150px;
+    height: auto;
+    display: block;
+}
+
+
+/* Profile header */
+#profileHeader {
+    display: grid;
+    grid-template-columns: 25% 75%;
+    align-items: center;
+    padding: 5%;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+#pfp-container {
+    background-color: white;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    
+    align-items: center;
+    justify-items: center;
+    grid-column: 1;
+    object-fit: cover;
+}
+
+#pfp {
+    object-fit: cover;
+    width: 20vw;
+    height: 20vw;
+    border-radius: 50%;
+}
+
+#text {
+    display: grid;
+    align-items: top;  
+    grid-template-columns: 70% 30%;
+    grid-template-rows: minmax(30px, auto);
+}
+
+#text h1 {
+    font-size: 1.5em;
+    margin: 0;
+    grid-column: 1;
+    grid-row: 1;
+    width: 45vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#user-handle {
+    width: 45vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+#text small {
+    font-size: 1em;
+    color: gray;
+    grid-column: 1;
+    grid-row: 2;
+}
+
+#text p {
+    font-size: 0.9em;
+    width: 45vw;
+    grid-column: 1;
+    grid-row: 3;
+}
+
+#edit-profile {
+    font-size: 0.8em;
+    border: none;
+    background-color: rgb(46, 0, 91);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    grid-column: 2;
+}
+
+#edit-profile:hover {
+    background-color: #8115fc;
+}
+
+#log-out {
+    font-size: 0.8em;
+    border: none;
+    background-color: lightgray;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 5px; 
+    grid-column: 2;
+    transition: 0.2s;
+}
+
+#log-out:hover {
+    background-color: rgb(34, 3, 66);
+    transition: 0.2s;
+}
+
+
+/* Posts container */
+#posts-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#posts-go-here {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Post card styles */
+.post-card {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    
+    width: 100%;
+    max-width: 500px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    margin-bottom: 20px;
+    width: 100%;
+    
+}
+
+/* Post Top Bar */
+.post-topbar {
+    display: grid;
+    grid-template-columns: 60% auto; 
+    align-items: center;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.05); 
+    font-size: 0.9em;
+}
+
+.post-title {
+    font-weight: bold;
+}
+
+.post-location {
+    text-align: right;
+    color: gray;
+    font-size: 0.8em;
+}
+
+/* Post Picture */
+.post-picture {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    display: block; 
+    cursor: pointer;
+}
+
+/* Post Bottom Bar */
+.post-bottombar {
+    display: grid;
+    grid-template-columns: 10% 70% 10% 10%;
+    grid-template-rows: minmax(10px, auto);
+   
+    padding: 10px;
+    background-color: #f8f9fa;
+    font-size: 0.9em;
+}
+
+.profileIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.post-user {
+    padding-left: 3%;
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 1.3em;
+    margin: 0;
+    vertical-align: top;
+}
+
+.post-time {
+    font-size: 0.8em;
+    color: gray;
+    grid-column: 2;
+    grid-row: 2;
+    padding-left: 3%;
+}
+
+.post-like {
+    width: 80%;
+    cursor: pointer;
+    grid-column: 4;
+    grid-row: 1;
+    z-index: 100;
+}
+
+.post-like-count {
+    width: 113%;
+    grid-column-end: 3;
+    padding-left: 95%;
+    float: right;
+    transform: translateY(5px);
+    font-size: 0.8em;
+    color: gray;
+    grid-column-start: 2;
+    grid-row: 1;
+}
+
+.post-edit-button {
+    margin-left: -150%;
+    grid-column: 4;
+    grid-row: 2;
+    background-color: rgb(74, 74, 74);
+    color: white;
+    width: 250%;
+    font-size: 0.75em;
+    height: 100%;
+    border-radius: 5px;
+}
+
+
+/* Navigation tab */
+#nav-tab {
+    
+    width: 100%;
+    align-items: center;
+    justify-items: center;
+    top: 70px;
+    z-index: 999;
+}
+
+#user-posts, #user-likes {
+    text-align: center;
+    font-size: 1em;
+    background-color: transparent;
+    color: rgb(46, 0, 91);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s;
+    width: 50%;
+}
+
+#user-posts.active {
+    font-weight: bold;   
+}
+
+#user-likes.active{
+    font-weight: bold;
+    
+}
+
+/* Bottom navigation */
+/* Bottom navigation */
+#bottomNav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Adjust number of columns based on your icons */
+    align-items: center;
+    justify-items: center;
+    background-color: rgba(202, 152, 251, 1); /* Gradient color */
+    position: fixed;
+    bottom: 0;
+    width: 100%; /* Ensure it spans the full width */
+    padding: 10px 0; /* Add some padding for spacing */
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1); /* Add shadow for better separation */
+    z-index: 1000;
+}
+
+#bottomNav .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 0;
+    width: 100%;
+    height: 100%;
+    color: black;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#bottomNav .nav-item.active {
+    background-color: rgb(74, 74, 74); /* Highlight active icon */
+    color: whitesmoke; /* Change color for active item */
+    border-radius: 10px; /* Rounded corners for active items */
+}
+
+#bottomNav .nav-item.active svg {
+    color: whitesmoke;
+}
+
+#bottomNav .nav-item svg {
+    width: 24px; /* Resize icons for better appearance */
+    height: 24px;
+    margin-bottom: 5px; /* Add spacing between icon and text */
+    transition: transform 0.3s; /* Add smooth hover effect */
+}
+
+#bottomNav .nav-item:hover svg {
+    transform: scale(1.1); /* Slightly enlarge on hover */
+}
+
+#bottomNav .nav-link {
+    color: inherit; /* Inherit color from parent */
+    text-decoration: none;
+    font-size: 0.85em; /* Adjust font size */
+}
+
+/* Responsive design adjustments */
+@media (max-width: 700px) {
+    #bottomNav {
+        padding: 5px 0;
+    }
+
+    #bottomNav .nav-item svg {
+        width: 20px; /* Resize icons for smaller screens */
+        height: 20px;
+    }
+
+    #bottomNav .nav-link {
+        font-size: 0.75em; /* Smaller text for mobile */
+    }
+}
+
+
+
+
+    .profileIcon {
+        width: 30px;
+        height: 30px;
+    }
+
+    .post-like,
+    .post-kebab {
+        width: 30px;
+        height: 30px;
+    }
+

@@ -1,0 +1,8 @@
+.DS_Store
+*.logs
+node_modules/
+.vscode/
+firebaseimport.txt
+cors.json
+package.json
+package-lock.json

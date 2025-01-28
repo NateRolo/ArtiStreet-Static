@@ -1,0 +1,226 @@
+body {
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+    padding-bottom: 80px;
+
+}
+
+#navbar-logo {
+    object-fit: contain;
+    width: 150px;
+    /* filter: drop-shadow(0 0 0.75rem black); */
+    z-index: 1000;
+}
+
+
+#navbar-mobile {
+    background: linear-gradient(90deg, rgba(0, 212, 255, 1) 0%, rgba(202, 152, 251, 1) 65%, rgba(202, 152, 251, 1) 100%);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+#backButton {
+    width: 50px;
+    cursor: pointer;
+}
+
+.navbar-brand {
+    float: left;
+}
+
+.inputs {
+    display: grid;
+    
+    grid-template-rows: 40vh auto auto auto;
+    grid-gap: 1vw;
+    padding-top: 20px;
+    width: 90vw;
+    margin: auto;
+  
+}
+
+#image {
+    
+    grid-row: 1;
+}
+
+#title {
+    grid-row: 2;
+}
+
+#location {
+    grid-row: 3;
+}
+
+#input-description {
+    grid-row: 4;
+}
+
+.button-container {
+    display: table;
+    width: 90%;
+    text-align: center;
+    margin: auto;
+}
+
+.button-container>ul {
+    display: table-row;
+}
+
+ul>li {
+    display: table-cell;
+
+}
+
+#save_button,
+#cancel_button {
+    width: 100px;
+
+}
+
+input[type="file"] {
+    display: none;
+}
+
+#img-label {
+    grid-area: image;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    border: 1px solid black;
+    z-index: 1000;
+
+}
+
+#img-upload-preview {
+    width: 100%;
+    display: none;
+    grid-row: 1;
+    cursor: pointer;
+    object-fit: contain;
+    max-height: 100%;
+}
+
+#bottomNav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Adjust number of columns based on your icons */
+    align-items: center;
+    justify-items: center;
+    background-color: rgba(202, 152, 251, 1); /* Gradient color */
+    position: fixed;
+    bottom: 0;
+    width: 100%; /* Ensure it spans the full width */
+    padding: 10px 0; /* Add some padding for spacing */
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1); /* Add shadow for better separation */
+    z-index: 1000;
+}
+
+#bottomNav .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 0;
+    width: 100%;
+    height: 100%;
+    color: black;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#bottomNav .nav-item.active {
+    background-color: rgb(74, 74, 74); /* Highlight active icon */
+    color: whitesmoke; /* Change color for active item */
+    border-radius: 10px; /* Rounded corners for active items */
+}
+
+#bottomNav .nav-item.active svg {
+    color: whitesmoke;
+}
+
+#bottomNav .nav-item svg {
+    width: 24px; /* Resize icons for better appearance */
+    height: 24px;
+    margin-bottom: 5px; /* Add spacing between icon and text */
+    transition: transform 0.3s; /* Add smooth hover effect */
+}
+
+#bottomNav .nav-item:hover svg {
+    transform: scale(1.1); /* Slightly enlarge on hover */
+}
+
+#bottomNav .nav-link {
+    color: inherit; /* Inherit color from parent */
+    text-decoration: none;
+    font-size: 0.85em; /* Adjust font size */
+}
+
+/* Responsive design adjustments */
+@media (max-width: 700px) {
+    #bottomNav {
+        padding: 5px 0;
+    }
+
+    #bottomNav .nav-item svg {
+        width: 20px; /* Resize icons for smaller screens */
+        height: 20px;
+    }
+
+    #bottomNav .nav-link {
+        font-size: 0.75em; /* Smaller text for mobile */
+    }
+}
+
+
+/* Desktop navbar styling. Copy and paste into other css templates */
+#search-button {
+    background-color: #7e09f0;
+    border: solid 2px #7e09f0;
+    transition: 0.2s;
+    color: white;
+
+}
+
+#search-button:hover {
+    transition: 0.2s;
+    background-color: #5706a6;
+    border: solid 2px #5706a6;
+}
+
+#navbar-desktop .nav-link {
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 650;
+    transition: 0.2s;
+}
+
+#navbar-desktop .nav-link:hover {
+    background-color: #7e09f0;
+    color: white;
+    transition: 0.2s;
+}
+
+#navbar-desktop {
+    background: rgb(202, 152, 251);
+    background: linear-gradient(90deg, rgba(0, 212, 255, 1) 0%, rgba(202, 152, 251, 1) 35%, rgba(202, 152, 251, 1) 100%);
+}
+
+@media screen and (max-width: 1200px) {
+
+    body {
+        padding-bottom: 46px;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+
+    #bottom-nav-mobile {
+        display: none;
+    }
+
+}
+
+/* Desktop navbar styling end */

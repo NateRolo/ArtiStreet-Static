@@ -1,0 +1,469 @@
+body {
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+
+
+
+/* Bottom navigation */
+#bottomNav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Adjust number of columns based on your icons */
+    align-items: center;
+    justify-items: center;
+    background-color: rgba(202, 152, 251, 1); /* Gradient color */
+    position: fixed;
+    bottom: 0;
+    width: 100%; /* Ensure it spans the full width */
+    padding: 10px 0; /* Add some padding for spacing */
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1); /* Add shadow for better separation */
+    z-index: 1000;
+}
+
+#bottomNav .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 0;
+    width: 100%;
+    height: 100%;
+    color: black;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#bottomNav .nav-item.active {
+    background-color: rgb(74, 74, 74); /* Highlight active icon */
+    color: whitesmoke; /* Change color for active item */
+    border-radius: 10px; /* Rounded corners for active items */
+}
+
+#bottomNav .nav-item.active svg {
+    color: whitesmoke;
+}
+
+#bottomNav .nav-item svg {
+    width: 24px; /* Resize icons for better appearance */
+    height: 24px;
+    margin-bottom: 5px; /* Add spacing between icon and text */
+    transition: transform 0.3s; /* Add smooth hover effect */
+}
+
+#bottomNav .nav-item:hover svg {
+    transform: scale(1.1); /* Slightly enlarge on hover */
+}
+
+#bottomNav .nav-link {
+    color: inherit; /* Inherit color from parent */
+    text-decoration: none;
+    font-size: 0.85em; /* Adjust font size */
+}
+
+/* Responsive design adjustments */
+@media (max-width: 700px) {
+    #bottomNav {
+        padding: 5px 0;
+    }
+
+    #bottomNav .nav-item svg {
+        width: 20px; /* Resize icons for smaller screens */
+        height: 20px;
+    }
+
+    #bottomNav .nav-link {
+        font-size: 0.75em; /* Smaller text for mobile */
+    }
+}
+
+#back-arrow {
+    width: 5%;
+    color: black;
+}
+
+/* Post description & Comment styling */
+
+.card .card-body {
+    display: grid;
+    grid-template-columns: 15% 85%;
+    grid-template-rows: auto auto auto auto auto auto auto;
+    gap: 5px;
+    align-items: center;
+}
+
+.bi-person-circle {
+    grid-column: 1;
+    width: 60%;
+    align-self: start;
+}
+
+.post-title {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+#user-name {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 1rem;
+    margin: 0;
+}
+
+#user-handle {
+    grid-column: 2;
+    grid-row: 3;
+    font-size: 0.85rem;
+    color: gray;
+}
+
+.post-description {
+    grid-column: 2;
+    grid-row: 4;
+    /* Move the description below the handle */
+    font-size: 1rem;
+    /* Adjust font size if needed */
+    margin-top: 5px;
+    /* Optional: Add spacing between the handle and description */
+}
+
+.post-time {
+    grid-column: 2;
+    grid-row: 5;
+    font-size: 0.75em;
+    color: gray;
+}
+
+.post-location {
+    transform: translateY(-20px);
+    grid-column: 2;
+    grid-row: 6;
+    font-size: 0.75em;
+    color: gray;
+    padding-top: 2px;
+}
+
+.text-body-secondary {
+    font-size: 0.75em;
+    color: gray;
+}
+
+/* Welcome Section Styling */
+
+#welcome {
+    color: #c7c7c7;
+}
+
+#welcome h1 {
+    color: white;
+}
+
+#welcome p b {
+    color: white;
+}
+
+#welcome p span {
+    font-weight: bold;
+}
+
+/* Button Styling */
+
+.my-button {
+    width: 150px;
+    height: 40px;
+    grid-column: 2;
+    grid-row: 6;
+    background-color: #699ee3;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.my-button:hover {
+    background-color: #4a74ab;
+}
+
+.my-button p {
+    font-size: 15px;
+}
+
+/* Navigation Styling */
+
+
+
+/* Navbar */
+#navbar {
+    width: 100%;
+    background: linear-gradient(90deg, rgba(0, 212, 255, 1) 0%, rgba(202, 152, 251, 1) 65%, rgba(202, 152, 251, 1) 100%);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    padding: 10px 0;
+}
+
+.container-fluid {
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-brand {
+    position: relative;
+}
+
+#navbar-logo {
+    width: 150px;
+    height: auto;
+    display: block;
+}
+
+
+/* Responsive Media Queries */
+
+@media screen and (max-width: 1200px) {
+    #navbar-desktop {
+        display: none;
+    }
+
+    body {
+        padding-bottom: 46px;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    #navbar-mobile {
+        display: none;
+    }
+
+    #bottom-nav-mobile {
+        display: none;
+    }
+
+    body {
+        padding-bottom: 46px;
+    }
+}
+
+/* Styling for the comment section */
+.card {
+    margin-top: 20px;
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+#comment-form-card {
+    margin-top: 20px;
+    /* Adds space between cards */
+}
+
+#comment-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    /* Single column form layout */
+    gap: 10px;
+}
+
+#comments-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    /* Single column layout for each comment */
+    gap: 15px;
+}
+
+.comment {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    /* Avatar + Content layout */
+    grid-template-rows: auto auto auto;
+    /* Rows for content */
+    gap: 10px;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.comment:last-child {
+    border-bottom: none;
+}
+
+.comment .bi-person-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    align-self: center;
+    /* Align avatar in the center */
+}
+
+.comment .comment-body {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.comment .comment-body .username {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #333;
+}
+
+.comment .comment-body .content {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.comment .comment-time {
+    font-size: 0.75em;
+    color: gray;
+    align-self: flex-start;
+    /* Position time at the start */
+}
+
+#comment-text {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    resize: vertical;
+    background-color: #fff;
+    transition: border-color 0.3s;
+}
+
+#comment-text:focus {
+    outline: none;
+    border-color: #7e09f0;
+    box-shadow: 0 0 5px rgba(126, 9, 240, 0.5);
+}
+
+#comment-text::placeholder {
+    color: #aaa;
+}
+
+.profile-picture {
+  border-radius: 50%;
+  object-fit: cover;
+  display: inline-block;
+}
+
+
+button[type="submit"] {
+    width: 150px;
+    height: 40px;
+    background-color: #699ee3;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    align-self: flex-start;
+    /* Align button to the left */
+}
+
+button[type="submit"]:hover {
+    background-color: #4a74ab;
+}
+
+.card2 {
+    display: block; /* Ensures the card itself behaves as a block */
+    padding: 10px;
+    background-color: #f9f9f9; /* Optional: Background for the card */
+}
+
+.card-body2 {
+    display: flex;
+    flex-direction: column; /* Stack comments vertically */
+    gap: 15px; /* Space between comments */
+}
+
+.comment-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Push text to the left and icon to the right */
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.comment-profile-img {
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.comment-text {
+    flex-grow: 1; /* Take up available space between the image and the icon */
+    margin-left: 10px;
+}
+
+.bi-trash {
+    cursor: pointer; /* Indicates interactivity */
+    color: #888; /* Optional: Default color for the trash icon */
+    transition: color 0.3s;
+    height: 30px;
+    width: 30px;
+}
+
+.bi-trash:hover {
+    color: red; /* Optional: Highlight color on hover */
+}
+
+
+
+@media screen and (max-width: 768px) {
+
+    /* Adjust for smaller screens */
+    .card-body {
+        padding: 15px;
+    }
+
+    #comment-text {
+        font-size: 0.9rem;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+        /* Full width for small screens */
+    }
+
+    #comment-form {
+        width: 100%;
+    }
+
+    #comments-list {
+        flex: 1;
+    }
+}
+
+#comment-form {
+    width: 200px;
+    /* Increase the width to make the form bigger */
+    margin: 0 auto;
+    /* This centers it horizontally */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* This ensures child elements are centered horizontally */
+    justify-content: center;
+    /* Centers the content vertically within its container */
+    height: 100%;
+    /* Ensures the form takes up full height of the parent container */
+    transform: translateX(75px);
+    /* You can adjust this for positioning */
+}

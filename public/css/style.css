@@ -1,0 +1,67 @@
+/* For light text that's not quite white: use #c7c7c7 */
+
+body {
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+    
+}
+
+#navbar-logo {
+    object-fit: contain;
+    max-width: 150px;
+}
+
+svg {
+    width: 30px;
+    height: 30px;
+}
+
+#content {
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/public/img/background1.jpeg');
+    background-size: 100% auto;
+}
+
+#welcome {
+    color: #c7c7c7
+}
+
+#welcome h1 {
+    color: white;
+}
+
+#welcome p b {
+    color: white;
+}
+
+#welcome p span {
+    font-weight: bold;
+}
+
+#upload {
+    color: #98fb98;
+}
+
+#discover {
+    color: #ca98fb;
+}
+
+#navbar {
+    background: rgb(202, 152, 251);
+    background: linear-gradient(90deg, rgba(0, 212, 255, 1) 0%, rgba(202, 152, 251, 1) 35%, rgba(202, 152, 251, 1) 100%);
+    box-shadow: 0 30px 50px black;
+}
+
+#login-redirect {
+    font-size: 12pt;
+}
+
+#signup-redirect {
+    font-size: 12pt;
+}
+
+@media only screen and (min-width: 701px) {
+    #bottomNav {
+        display: none;
+    }
+}
