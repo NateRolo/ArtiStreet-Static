@@ -1,5 +1,11 @@
+import { auth, db } from './config.js';
 import { savePost as dbSavePost, uploadImageWithProgress } from './dbOperations.js';
-
+import { 
+    collection, 
+    doc, 
+    getDoc, 
+    serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
 // Initialize DOM Elements
 const titleInput = document.getElementById("input-title");
@@ -47,7 +53,7 @@ const hexToDataURL = (hexString, mimeType = 'image/jpeg') => {
 // Utility Function: Populate Post Info
 const populatePostForm = async (docId) => {
     try {
-        const postDoc = await db.collection("posts").doc(docId).get();
+        const postDoc = await getDoc(doc(db, "posts", docId));
         if (!postDoc.exists) {
             Swal.fire({
                 icon: "error",
@@ -127,7 +133,7 @@ const saveOrUpdatePost = async (docId = null) => {
     const [street, city] = location.split(",").map((part) => part.trim());
 
     try {
-        const user = firebase.auth().currentUser;
+        const user = auth.currentUser;
         if (!user) {
             Swal.fire({
                 icon: "error",
@@ -139,7 +145,9 @@ const saveOrUpdatePost = async (docId = null) => {
 
         console.log("Current user:", user.uid); // Debug log
 
-        const userDoc = await db.collection("users").doc(user.uid).get();
+        const usersRef = collection(db, "users");
+        const userDocRef = doc(usersRef, user.uid);
+        const userDoc = await getDoc(userDocRef);
         if (!userDoc.exists) {
             Swal.fire({
                 icon: "error",
@@ -162,7 +170,7 @@ const saveOrUpdatePost = async (docId = null) => {
                 handle: userData.userHandle,
             },
             description,
-            time: firebase.firestore.FieldValue.serverTimestamp(),
+            time: serverTimestamp(),
         };
 
         if (docId) {
@@ -250,15 +258,26 @@ function hideDeletePostButton() {
 saveButton.addEventListener("click", async () => {
     try {
         const file = imgUpload.files[0];
+        if (!file) {
+            throw new Error("Please select an image");
+        }
         const title = titleInput.value.trim();
+        if (!title) {
+            throw new Error("Title is required");
+        }
         const location = locationInput.value.trim();
+        if (!location) {
+            throw new Error("Location is required");
+        }
         const description = descOfPost.value.trim();
         const [street, city] = location.split(",").map(part => part.trim());
         
-        const user = firebase.auth().currentUser;
+        const user = auth.currentUser;
         if (!user) throw new Error("User not authenticated");
         
-        const userDoc = await db.collection("users").doc(user.uid).get();
+        const usersRef = collection(db, "users");
+        const userDocRef = doc(usersRef, user.uid);
+        const userDoc = await getDoc(userDocRef);
         const userData = userDoc.data();
         
         const postData = {
@@ -266,7 +285,7 @@ saveButton.addEventListener("click", async () => {
             description,
             city,
             street,
-            file,
+            file: file,
             user: {
                 uid: user.uid,
                 username: userData.username,
@@ -276,6 +295,7 @@ saveButton.addEventListener("click", async () => {
         
         // Show progress indicator
         const progressBar = document.createElement('div');
+        progressBar.className = 'progress-bar';
         imgPreview.parentNode.appendChild(progressBar);
         
         await dbSavePost(postData, (progress) => {
@@ -355,7 +375,7 @@ const deletePost = async (docId) => {
     if (!confirmDelete.isConfirmed) return;
 
     try {
-        const user = firebase.auth().currentUser;
+        const user = auth.currentUser;
         if (!user) {
             Swal.fire({
                 icon: "error",
@@ -365,8 +385,9 @@ const deletePost = async (docId) => {
             return;
         }
 
-        const postRef = db.collection("posts").doc(docId);
-        const postDoc = await postRef.get();
+        const postsRef = collection(db, "posts");
+        const postRef = doc(postsRef, docId);
+        const postDoc = await getDoc(postRef);
 
         if (!postDoc.exists) {
             Swal.fire({
@@ -389,7 +410,7 @@ const deletePost = async (docId) => {
         }
 
         // Delete the post document from Firestore
-        await postRef.delete();
+        await deleteDoc(postRef);
 
         Swal.fire({
             icon: "success",
@@ -419,10 +440,12 @@ navPostButton.onload = navPostButton.classList.toggle("active");
 
 async function processPostData(postData) {
     try {
-        const user = firebase.auth().currentUser;
+        const user = auth.currentUser;
         if (!user) throw new Error("User not authenticated");
 
-        const userDoc = await db.collection("users").doc(user.uid).get();
+        const usersRef = collection(db, "users");
+        const userDocRef = doc(usersRef, user.uid);
+        const userDoc = await getDoc(userDocRef);
         const userData = userDoc.data();
 
         let imageHex = null;

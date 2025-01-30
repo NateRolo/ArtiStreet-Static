@@ -1,8 +1,5 @@
-// Import Firebase Storage
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-storage.js";
-
-// Initialize Storage
-const storage = firebase.storage();
+import { storage } from './config.js';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-storage.js";
 
 // Utility functions for database operations
 
@@ -94,8 +91,13 @@ async function savePost(postData, progressCallback) {
 
     // Upload image if provided
     let imageData = null;
-    if (postData.image) {
-        imageData = await uploadImageWithProgress(postData.image, progressCallback);
+    if (postData.file) {
+        try {
+            imageData = await uploadImageWithProgress(postData.file, progressCallback);
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            throw error;
+        }
     }
 
     const data = {
@@ -103,7 +105,7 @@ async function savePost(postData, progressCallback) {
         description: postData.description || '',
         city: postData.city,
         street: postData.street,
-        imageUrl: imageData ? imageData.url : null,
+        image_URL: imageData ? imageData.url : null,
         imagePath: imageData ? imageData.path : null,
         imageType: imageData ? imageData.type : null,
         likesCount: postData.likesCount || 0,
@@ -188,7 +190,7 @@ async function updatePostImage(postId, newFile) {
             
             // Update post with new image data
             await postRef.update({
-                imageUrl: imageData.url,
+                image_URL: imageData.url,
                 imagePath: imageData.path,
                 imageType: newFile.type
             });
@@ -198,7 +200,7 @@ async function updatePostImage(postId, newFile) {
         
         // If no new file, clear image data
         await postRef.update({
-            imageUrl: null,
+            image_URL: null,
             imagePath: null,
             imageType: null
         });
@@ -225,7 +227,7 @@ async function getPostWithImage(postId) {
         // If post has an image, get the download URL
         if (postData.imagePath) {
             const imageRef = ref(storage, postData.imagePath);
-            postData.imageUrl = await getDownloadURL(imageRef);
+            postData.image_URL = await getDownloadURL(imageRef);
         }
         
         return { id: postDoc.id, ...postData };
