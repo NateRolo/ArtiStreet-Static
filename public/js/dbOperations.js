@@ -1,4 +1,38 @@
+// Import Firebase Storage
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-storage.js";
+
+// Initialize Storage
+const storage = getStorage();
+
 // Utility functions for database operations
+
+// Upload image to Firebase Storage
+async function uploadImage(file) {
+    if (!file) return null;
+    
+    try {
+        // Create a unique filename using timestamp and original name
+        const timestamp = Date.now();
+        const fileName = `${timestamp}_${file.name}`;
+        
+        // Create a reference to the file location
+        const storageRef = ref(storage, `posts/${fileName}`);
+        
+        // Upload the file
+        const snapshot = await uploadBytes(storageRef, file);
+        
+        // Get the download URL
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        
+        return {
+            url: downloadURL,
+            path: `posts/${fileName}`
+        };
+    } catch (error) {
+        console.error("Error uploading image:", error);
+        throw error;
+    }
+}
 
 // Create or update user document
 async function saveUser(user, userData) {
@@ -21,12 +55,19 @@ async function savePost(postData) {
         db.collection('posts').doc(postData.id) : 
         db.collection('posts').doc();
 
+    // Upload image if provided
+    let imageData = null;
+    if (postData.image) {
+        imageData = await uploadImage(postData.image);
+    }
+
     const data = {
         title: postData.title,
         description: postData.description || '',
         city: postData.city,
         street: postData.street,
-        image: postData.image || null,
+        imageUrl: imageData ? imageData.url : null,
+        imagePath: imageData ? imageData.path : null,
         likesCount: postData.likesCount || 0,
         time: postData.time || firebase.firestore.FieldValue.serverTimestamp(),
         user: {
@@ -62,36 +103,32 @@ async function saveComment(commentData) {
     return { id: commentRef.id, ...data };
 }
 
-// Convert image to hex
-async function imageToHex(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const arrayBuffer = event.target.result;
-            const bytes = new Uint8Array(arrayBuffer);
-            let hexString = '';
-            for (let i = 0; i < bytes.length; i++) {
-                const hex = bytes[i].toString(16).padStart(2, '0');
-                hexString += hex;
-            }
-            resolve(hexString);
-        };
-        reader.onerror = reject;
-        reader.readAsArrayBuffer(file);
-    });
-}
+// Delete post and its image
+async function deletePost(postId) {
+    try {
+        // Get post data
+        const postRef = db.collection('posts').doc(postId);
+        const postDoc = await postRef.get();
+        const postData = postDoc.data();
 
-// Convert hex to data URL
-function hexToDataURL(hexString, mimeType = 'image/jpeg') {
-    const bytes = new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
-    const blob = new Blob([bytes], { type: mimeType });
-    return URL.createObjectURL(blob);
+        // Delete image from storage if it exists
+        if (postData.imagePath) {
+            const imageRef = ref(storage, postData.imagePath);
+            await deleteObject(imageRef);
+        }
+
+        // Delete post document
+        await postRef.delete();
+    } catch (error) {
+        console.error("Error deleting post:", error);
+        throw error;
+    }
 }
 
 export default {
     saveUser,
     savePost,
     saveComment,
-    imageToHex,
-    hexToDataURL
+    deletePost,
+    uploadImage
 };
