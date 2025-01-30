@@ -226,3 +226,21 @@ function getPostIdFromURL() {
   const params = new URLSearchParams(window.location.search);
   return params.get("docID"); // Assumes post ID is passed as a query parameter named 'docID'
 }
+
+async function addComment(postId, text) {
+    try {
+        const user = firebase.auth().currentUser;
+        if (!user) throw new Error("User not authenticated");
+
+        const comment = await dbOperations.saveComment({
+            postID: postId,
+            userID: user.uid,
+            text: text
+        });
+
+        return comment;
+    } catch (error) {
+        console.error("Error adding comment:", error);
+        throw error;
+    }
+}

@@ -23,6 +23,10 @@ function timeAgo(date) {
 
 // Function to populate the page with data from Firebase
 async function displayPostsDynamically(collection, type = "all") {
+    console.log("Starting displayPostsDynamically");
+    console.log("Firestore instance:", db);
+    console.log("Current user:", firebase.auth().currentUser);
+
     const cardTemplate = document.getElementById("post-template");
     const currentUser = firebase.auth().currentUser;
 
@@ -48,107 +52,112 @@ async function displayPostsDynamically(collection, type = "all") {
             .orderBy("time", "desc");
     }
 
-    const posts = await query.get();
+    try {
+        const postsSnapshot = await query.get();
+        console.log("Posts retrieved:", postsSnapshot.size);
 
-    posts.forEach(async (doc) => {
-        const data = doc.data();
-        const title = data.title;
-        const location = data.street.concat(", " + data.city);
-        const time = data.time;
-        const imgURL = data.image_URL;
-        const userName = data.user?.username || "Unknown User";
-        const docID = doc.id;
-        const likesCount = data.likesCount || 0;
-        const userID = data.user?.uid;
+        postsSnapshot.forEach(async (doc) => {
+            const data = doc.data();
+            const title = data.title;
+            const location = data.street.concat(", " + data.city);
+            const time = data.time;
+            const imgURL = data.image_URL;
+            const userName = data.user?.username || "Unknown User";
+            const docID = doc.id;
+            const likesCount = data.likesCount || 0;
+            const userID = data.user?.uid;
 
-        let pfp = "/public/img/profileImage.png"; // Default profile picture
-        // Fetch user profile img
-        if (userID) {
-            try {
-                const userDoc = await db.collection('users').doc(userID).get();
-                pfp = userDoc.exists && userDoc.data().profile_picture ? userDoc.data().profile_picture : pfp;
-            } catch (error) {
-                console.error(`Error fetching user document for userID: ${userID}`, error);
+            let pfp = "/public/img/profileImage.png"; // Default profile picture
+            // Fetch user profile img
+            if (userID) {
+                try {
+                    const userDoc = await db.collection('users').doc(userID).get();
+                    pfp = userDoc.exists && userDoc.data().profile_picture ? userDoc.data().profile_picture : pfp;
+                } catch (error) {
+                    console.error(`Error fetching user document for userID: ${userID}`, error);
+                }
             }
-        }
 
-        const newPost = cardTemplate.content.cloneNode(true);
+            const newPost = cardTemplate.content.cloneNode(true);
 
-        // Set image, title, location, and username
-        const postPictureElement = newPost.querySelector('.post-picture');
-        const postTopBar = newPost.querySelector('.post-topbar');
-        const postBottomBar = newPost.querySelector('.post-bottombar');
-        const postTitleElement = newPost.querySelector('.post-title');
-        const postProfilePictureElement = newPost.querySelector('.profileIcon');
+            // Set image, title, location, and username
+            const postPictureElement = newPost.querySelector('.post-picture');
+            const postTopBar = newPost.querySelector('.post-topbar');
+            const postBottomBar = newPost.querySelector('.post-bottombar');
+            const postTitleElement = newPost.querySelector('.post-title');
+            const postProfilePictureElement = newPost.querySelector('.profileIcon');
 
-        // Prevent clicks on the entire card from redirecting (to avoid content page)
-        if (postTopBar || postBottomBar) {
-            postTopBar.onclick = (event) => {
-                event.stopPropagation(); // Prevent the click event from propagating
-                window.location.href = `content_view.html?docID=${docID}`;
-            };
+            // Prevent clicks on the entire card from redirecting (to avoid content page)
+            if (postTopBar || postBottomBar) {
+                postTopBar.onclick = (event) => {
+                    event.stopPropagation(); // Prevent the click event from propagating
+                    window.location.href = `content_view.html?docID=${docID}`;
+                };
 
-            postBottomBar.onclick = (event) => {
-                event.stopPropagation(); // Prevent the click event from propagating
-                window.location.href = `content_view.html?docID=${docID}`;
-            };
-        }
+                postBottomBar.onclick = (event) => {
+                    event.stopPropagation(); // Prevent the click event from propagating
+                    window.location.href = `content_view.html?docID=${docID}`;
+                };
+            }
 
-        // Prevent clicks on like button from redirecting
-        const likeButton = newPost.querySelector('.post-like');
-        if (likeButton) {
-            likeButton.id = 'save-' + docID;
-            if (userLikes.includes(docID)) {
-                likeButton.src = '/public/img/heart(1).png'; // Set to liked icon
+            // Prevent clicks on like button from redirecting
+            const likeButton = newPost.querySelector('.post-like');
+            if (likeButton) {
+                likeButton.id = 'save-' + docID;
+                if (userLikes.includes(docID)) {
+                    likeButton.src = '/public/img/heart(1).png'; // Set to liked icon
+                } else {
+                    likeButton.src = '/public/img/heart.png'; // Set to unliked icon
+                }
+                likeButton.onclick = (event) => {
+                    event.stopPropagation(); // Prevent the click event from propagating to parent elements
+                    toggleLike(docID); // Execute like functionality
+                };
+            }
+
+            // Prevent clicks on the post image from redirecting to content page
+            if (postPictureElement) {
+                postPictureElement.onclick = (event) => {
+                    event.stopPropagation(); // Prevent click event from bubbling up to the card
+                    window.location.href = `content_view.html?docID=${docID}`;
+                };
+            }
+
+            // Set the title and post details
+            postTitleElement.innerHTML = title;
+            postPictureElement.src = imgURL;
+
+            // Set profile image
+            if (postProfilePictureElement) {
+                postProfilePictureElement.src = pfp;
+            }
+
+            newPost.querySelector('.post-user').innerHTML = userName;
+            newPost.querySelector('.post-user').setAttribute("data-user-id", userID);
+            newPost.querySelector('.profileIcon').setAttribute("data-user-id", userID);
+            newPost.querySelector('.post-location').innerHTML = location;
+
+            // Set like button and like count
+            const likeCountElement = newPost.querySelector('.post-like-count');
+            if (likeCountElement) {
+                likeCountElement.id = 'like-count-' + docID;
+                likeCountElement.innerText = `${likesCount} like${likesCount !== 1 ? 's' : ''}`;
+            }
+
+            // Display time ago
+            const timeElement = newPost.querySelector('.post-time');
+            if (time && timeElement) {
+                timeElement.innerHTML = timeAgo(time.toDate());
             } else {
-                likeButton.src = '/public/img/heart.png'; // Set to unliked icon
+                timeElement.innerHTML = "Unknown time";
             }
-            likeButton.onclick = (event) => {
-                event.stopPropagation(); // Prevent the click event from propagating to parent elements
-                toggleLike(docID); // Execute like functionality
-            };
-        }
 
-        // Prevent clicks on the post image from redirecting to content page
-        if (postPictureElement) {
-            postPictureElement.onclick = (event) => {
-                event.stopPropagation(); // Prevent click event from bubbling up to the card
-                window.location.href = `content_view.html?docID=${docID}`;
-            };
-        }
-
-        // Set the title and post details
-        postTitleElement.innerHTML = title;
-        postPictureElement.src = imgURL;
-
-        // Set profile image
-        if (postProfilePictureElement) {
-            postProfilePictureElement.src = pfp;
-        }
-
-        newPost.querySelector('.post-user').innerHTML = userName;
-        newPost.querySelector('.post-user').setAttribute("data-user-id", userID);
-        newPost.querySelector('.profileIcon').setAttribute("data-user-id", userID);
-        newPost.querySelector('.post-location').innerHTML = location;
-
-        // Set like button and like count
-        const likeCountElement = newPost.querySelector('.post-like-count');
-        if (likeCountElement) {
-            likeCountElement.id = 'like-count-' + docID;
-            likeCountElement.innerText = `${likesCount} like${likesCount !== 1 ? 's' : ''}`;
-        }
-
-        // Display time ago
-        const timeElement = newPost.querySelector('.post-time');
-        if (time && timeElement) {
-            timeElement.innerHTML = timeAgo(time.toDate());
-        } else {
-            timeElement.innerHTML = "Unknown time";
-        }
-
-        // Append the new post to the page
-        document.getElementById(collection + "-go-here").appendChild(newPost);
-    });
+            // Append the new post to the page
+            document.getElementById(collection + "-go-here").appendChild(newPost);
+        });
+    } catch (error) {
+        console.error("Error fetching posts:", error);
+    }
 }
 
 // Firebase Auth State Change Listener

@@ -10,26 +10,21 @@ function initializeLoginListeners() {
   }
 
   if (loginButton) {
-    loginButton.addEventListener("click", function (event) {
+    loginButton.addEventListener("click", async function (event) {
       event.preventDefault();
+      try {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+        console.log("Attempting login for:", email);
+        const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+        console.log("Login successful:", userCredential.user.uid);
 
-      // input validation
-      if (!email || !password) {
-        alert("Please fill out all fields.");
-        return;
+        window.location.href = '/app/html/Landing.html';
+      } catch (error) {
+        console.error("Login error:", error);
+        alert(error.message);
       }
-
-      firebase.auth().signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          window.location.href = '/app/html/Landing.html';
-        })
-        .catch((error) => {
-          const errorMessage = error.message;
-          alert(errorMessage);
-        });
     });
   }
 }

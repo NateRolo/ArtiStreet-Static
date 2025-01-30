@@ -133,6 +133,8 @@ const saveOrUpdatePost = async (docId = null) => {
             return;
         }
 
+        console.log("Current user:", user.uid); // Debug log
+
         const userDoc = await db.collection("users").doc(user.uid).get();
         if (!userDoc.exists) {
             Swal.fire({
@@ -200,11 +202,16 @@ const saveOrUpdatePost = async (docId = null) => {
             window.location.href = "/app/html/Landing.html";
         }, 1500);
     } catch (error) {
-        console.error("Error saving/updating post:", error);
+        console.error("Error details:", {
+            code: error.code,
+            message: error.message,
+            stack: error.stack
+        });
+        
         Swal.fire({
             icon: "error",
             title: "Error",
-            text: "Failed to save the post. Please try again."
+            text: error.message || "Failed to save the post. Please try again."
         });
     }
 };
@@ -382,3 +389,36 @@ backButton.addEventListener('click', () => {
 // set nav button to active when clicked
 const navPostButton = document.getElementById("nav-post");
 navPostButton.onload = navPostButton.classList.toggle("active");
+
+async function savePost(postData) {
+    try {
+        const user = firebase.auth().currentUser;
+        if (!user) throw new Error("User not authenticated");
+
+        const userDoc = await db.collection("users").doc(user.uid).get();
+        const userData = userDoc.data();
+
+        let imageHex = null;
+        if (postData.file) {
+            imageHex = await imageToHex(postData.file);
+        }
+
+        const post = await dbOperations.savePost({
+            title: postData.title,
+            description: postData.description,
+            city: postData.city,
+            street: postData.street,
+            image: imageHex,
+            user: {
+                uid: user.uid,
+                username: userData.username,
+                handle: userData.userHandle
+            }
+        });
+
+        return post;
+    } catch (error) {
+        console.error("Error saving post:", error);
+        throw error;
+    }
+}
