@@ -146,29 +146,12 @@ const saveOrUpdatePost = async (docId = null) => {
         }
 
         const userData = userDoc.data();
-        let imageHex = null;
-        let imageType = null;
-
-        if (file) {
-            // Convert image to hex
-            imageHex = await imageToHex(file);
-            imageType = file.type;
-        } else if (docId) {
-            // Keep existing image if editing
-            const existingDoc = await db.collection("posts").doc(docId).get();
-            if (existingDoc.exists) {
-                const existingData = existingDoc.data();
-                imageHex = existingData.image_hex;
-                imageType = existingData.image_type;
-            }
-        }
 
         const postData = {
             title,
             city,
             street,
-            image_hex: imageHex,
-            image_type: imageType,
+            image: file, // Pass the file directly
             user: {
                 uid: user.uid,
                 username: userData.username,
@@ -179,35 +162,25 @@ const saveOrUpdatePost = async (docId = null) => {
         };
 
         if (docId) {
-            await db.collection("posts").doc(docId).update(postData);
-            Swal.fire({
-                position: "top-end",
-                icon: "success",
-                title: "Post updated successfully!",
-                showConfirmButton: false,
-                timer: 1500,
-            });
-        } else {
-            await db.collection("posts").doc().set(postData);
-            Swal.fire({
-                position: "top-end",
-                icon: "success",
-                title: "Post saved successfully!",
-                showConfirmButton: false,
-                timer: 1500,
-            });
+            // If editing, include the document ID
+            postData.id = docId;
         }
+
+        await dbOperations.savePost(postData);
+
+        Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: docId ? "Post updated successfully!" : "Post saved successfully!",
+            showConfirmButton: false,
+            timer: 1500,
+        });
 
         setTimeout(() => {
             window.location.href = "/app/html/Landing.html";
         }, 1500);
     } catch (error) {
-        console.error("Error details:", {
-            code: error.code,
-            message: error.message,
-            stack: error.stack
-        });
-        
+        console.error("Error details:", error);
         Swal.fire({
             icon: "error",
             title: "Error",
