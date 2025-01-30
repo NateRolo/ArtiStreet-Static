@@ -7,3 +7,4 @@ cors.json
 package.json
 package-lock.json
 config.js
+storage.rules

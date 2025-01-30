@@ -1,3 +1,6 @@
+import { savePost as dbSavePost, uploadImageWithProgress } from './dbOperations.js';
+
+
 // Initialize DOM Elements
 const titleInput = document.getElementById("input-title");
 const locationInput = document.getElementById("input-location");
@@ -13,6 +16,7 @@ const getQueryParam = (param) => {
     const params = new URLSearchParams(window.location.search);
     return params.get(param);
 };
+
 
 // Add utility function to convert image to hex
 const imageToHex = (file) => {
@@ -166,7 +170,7 @@ const saveOrUpdatePost = async (docId = null) => {
             postData.id = docId;
         }
 
-        await dbOperations.savePost(postData);
+        await dbSavePost(postData);
 
         Swal.fire({
             position: "top-end",
@@ -244,8 +248,58 @@ function hideDeletePostButton() {
 
 // save changes button
 saveButton.addEventListener("click", async () => {
-    const docId = getQueryParam("docId"); // Check if editing a post
-    await saveOrUpdatePost(docId);
+    try {
+        const file = imgUpload.files[0];
+        const title = titleInput.value.trim();
+        const location = locationInput.value.trim();
+        const description = descOfPost.value.trim();
+        const [street, city] = location.split(",").map(part => part.trim());
+        
+        const user = firebase.auth().currentUser;
+        if (!user) throw new Error("User not authenticated");
+        
+        const userDoc = await db.collection("users").doc(user.uid).get();
+        const userData = userDoc.data();
+        
+        const postData = {
+            title,
+            description,
+            city,
+            street,
+            file,
+            user: {
+                uid: user.uid,
+                username: userData.username,
+                handle: userData.userHandle
+            }
+        };
+        
+        // Show progress indicator
+        const progressBar = document.createElement('div');
+        imgPreview.parentNode.appendChild(progressBar);
+        
+        await dbSavePost(postData, (progress) => {
+            progressBar.style.width = `${progress}%`;
+        });
+        
+        // Success handling
+        Swal.fire({
+            icon: 'success',
+            title: 'Post saved successfully!'
+        });
+        
+        // Redirect after success
+        setTimeout(() => {
+            window.location.href = "/app/html/Landing.html";
+        }, 1500);
+    } catch (error) {
+        console.error('Error saving post:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error saving post',
+            text: error.message
+        });
+    }
 });
 
 const cancelEdit = () => {
@@ -363,7 +417,7 @@ backButton.addEventListener('click', () => {
 const navPostButton = document.getElementById("nav-post");
 navPostButton.onload = navPostButton.classList.toggle("active");
 
-async function savePost(postData) {
+async function processPostData(postData) {
     try {
         const user = firebase.auth().currentUser;
         if (!user) throw new Error("User not authenticated");
@@ -376,7 +430,7 @@ async function savePost(postData) {
             imageHex = await imageToHex(postData.file);
         }
 
-        const post = await dbOperations.savePost({
+        const post = await dbSavePost({
             title: postData.title,
             description: postData.description,
             city: postData.city,
